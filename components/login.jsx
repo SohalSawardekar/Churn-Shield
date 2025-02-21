@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const roles = [
   { label: "Admin", value: "admin" },
@@ -15,15 +17,35 @@ const roles = [
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
   const [role, setRole] = useState("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log({ role, email, password });
+
+    if (roles === "admin") {
+      router.push("/admin");
+    } else if (roles === "employee") {
+      router.push("/employee");
+    } else {
+      router.push("/customer");
+    }
+    // try {
+    //   const res = await signIn("credentials", {
+    //     email: username,
+    //     password: password,
+    //   });
+
+    //   if (res?.error) {
+    //     setErrMessage("Login failed. Please check your credentials.");
+    //   }
+    // } catch (error) {
+    //   console.log(`Error: ${error}`);
+    //   setErrMessage("An unexpected error occurred.");
+    // }
   };
 
   return (

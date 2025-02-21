@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import React from "react";
-import Provider from "@/components/providers";
 
 export const metadata = {
   title: "Churn Shield",
@@ -10,9 +9,7 @@ export const metadata = {
 const Rootlayout = ({ children }) => {
   return (
     <html lang="en">
-      <body>
-        <Provider>{children}</Provider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 };
