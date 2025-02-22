@@ -1,14 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Banknote,
-  CreditCard,
-  FileText,
-  Gift,
-  Landmark,
-  List,
-  Receipt,
-  Wallet,
-} from "lucide-react";
+import { Banknote, CreditCard, FileText, Gift, Landmark } from "lucide-react";
 import Navbar from "./navbar";
 
 export default function Dashboard() {
@@ -18,14 +9,16 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="p-6 grid grid-cols-1 gap-6">
         <div className="w-full flex items-center justify-center">
-          <Card className="h-[20rem] w-[40%] bg-gradient-to-br from-zinc-300 via-gray-300 to-slate-200 border-zinc-400 border-solid">
+          {/* Available Balance */}
+          <Card className="h-[20rem] w-[40%] flex flex-col items-center bg-gradient-to-br from-zinc-300 via-gray-300 to-slate-200 border-zinc-400 border-solid ">
             <CardHeader>
-              <CardTitle>Available Balance</CardTitle>
+              <CardTitle className="mt-[2rem] text-2xl font-semibold text-slate-600">
+                Available Balance
+              </CardTitle>
             </CardHeader>
             <CardContent className="text-3xl font-bold">$12,450.00</CardContent>
           </Card>
         </div>
-        {/* Available Balance */}
 
         <div className="flex flex-row items-center justify-center">
           {/* Credit Card & Debit Card Status */}
