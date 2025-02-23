@@ -70,7 +70,7 @@ const AdminDashboard = () => {
     {
       accessorKey: "Balance",
       header: "Balance",
-      cell: ({ row }) => <div>${row.getValue("Balance")}</div>,
+      cell: ({ row }) => <div>Rs {row.getValue("Balance")}</div>,
     },
     {
       header: "Actions",

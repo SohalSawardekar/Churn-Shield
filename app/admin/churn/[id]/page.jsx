@@ -55,10 +55,12 @@ const ChurnResult = ({ params: paramsPromise }) => {
         const data = await response.json();
         if (data && data.length > 0 && data[0].length === 2) {
           const prob = data[0][0][0]; // Extract probability
-          if (prob < 0.5) setWillLeave(true);
-          else setWillLeave(false);
+          const leave = Boolean(data[0][1][0]); // Convert 0 or 1 to boolean
+
+          console.log("Leave:", leave); // Debugging output
 
           setProbability(prob);
+          setWillLeave(leave); // Fix: Correctly setting state
         }
       } catch (err) {
         console.error("Error:", err);
@@ -105,6 +107,18 @@ const ChurnResult = ({ params: paramsPromise }) => {
                 <strong>Estimated Salary:</strong> $
                 {customer.data?.EstimatedSalary}
               </p>
+              <p>
+                <strong>Active Member:</strong>{" "}
+                <span
+                  className={
+                    customer.data?.IsActiveMember
+                      ? "text-green-500 font-bold"
+                      : "text-red-500 font-bold"
+                  }
+                >
+                  {customer.data?.IsActiveMember ? "True" : "False"}
+                </span>
+              </p>
             </>
           ) : (
             <Skeleton className="h-6 w-full" />
@@ -134,7 +148,7 @@ const ChurnResult = ({ params: paramsPromise }) => {
                 {customer?.data?.Surname || "Customer"} will{" "}
                 <strong>{willLeave ? "Leave" : "Stay"}</strong> with the Bank
               </p>
-              <p>Probability: {(probability * 100).toFixed(2)}%</p>
+              <p>Probability: {((1 - probability) * 100).toFixed(2)}%</p>
             </>
           )}
         </CardContent>
