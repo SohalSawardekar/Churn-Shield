@@ -1,7 +1,10 @@
+"use client";
+
 import React from "react";
 import AdminDashboard from "@/components/admin/adminDashboard";
-const page = () => {
+
+const adminpage = () => {
   return <AdminDashboard />;
 };
 
-export default page;
+export default adminpage;

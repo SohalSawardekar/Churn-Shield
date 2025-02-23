@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn, signOut } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react"; // Import a spinner
 
 const roles = [
   { label: "Admin", value: "admin" },
-  { label: "Employee", value: "employee" },
+  // { label: "Employee", value: "employee" },
   { label: "Customer", value: "customer" },
 ];
 
@@ -93,7 +93,6 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
             </div>
             <div className="relative">
@@ -107,7 +106,6 @@ export default function LoginPage() {
                   placeholder="********"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                   className="pr-10"
                 />
                 <button

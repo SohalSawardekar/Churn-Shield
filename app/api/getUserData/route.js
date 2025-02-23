@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await connectToDB();
 
-    const users = await Customers.find({});
+    const users = await Customers.find({}).sort({ CustomerId: 1 });
 
     return NextResponse.json({ success: true, data: users }, { status: 200 });
   } catch (error) {

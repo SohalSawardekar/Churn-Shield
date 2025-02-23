@@ -1,8 +1,10 @@
+"use client";
+
 import React from "react";
 import CustomerDashboard from "@/components/customer/dashboard";
 
-const page = () => {
+const customerpage = () => {
   return <CustomerDashboard />;
 };
 
-export default page;
+export default customerpage;

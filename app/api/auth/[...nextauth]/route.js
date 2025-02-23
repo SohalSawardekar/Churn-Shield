@@ -12,7 +12,7 @@ export const authOptions = {
   providers: [
     CredentialsProvider({
       credentials: {
-        username: { label: "Username", type: "text" }, // Use "username" instead of "email"
+        email: { label: "Username", type: "text" }, // Use "username" instead of "email"
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -29,8 +29,12 @@ export const authOptions = {
           }
 
           // Check password
-          const isValidPassword =
-            credentials.password === existingUser.password ? true : false;
+          // const isValidPassword =
+          //   credentials.password === existingUser.password ? true : false;
+          const isValidPassword = await bcrypt.compare(
+            credentials.password,
+            existingUser.password
+          );
 
           if (!isValidPassword) {
             throw new Error("Invalid password.");

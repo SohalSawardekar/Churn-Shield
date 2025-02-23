@@ -1,26 +1,27 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import LoadingScreen from "../loadingScreen";
+import AdminNav from "./adminNav";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "../ui/data-table";
 
 const AdminDashboard = () => {
   const router = useRouter();
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // Search state
 
   useEffect(() => {
     async function fetchUsers() {
       try {
         const res = await fetch("/api/getUserData");
         const data = await res.json();
-        console.log("Fetched data:", data);
 
         if (data.success) {
           setCustomers(data.data);
-          console.log(customers);
         } else {
           console.error("Failed to fetch users");
         }
@@ -34,56 +35,76 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+  // 🔍 Filter customers based on search query
+  const filteredCustomers = customers.filter((customer) =>
+    customer.CustomerId.toString().includes(searchQuery)
+  );
+
+  // 📌 Define columns for DataTable
+  const columns = [
+    {
+      accessorKey: "CustomerId",
+      header: "Customer ID",
+      cell: ({ row }) => <div>{row.getValue("CustomerId")}</div>,
+    },
+    {
+      accessorKey: "Surname",
+      header: "Surname",
+      cell: ({ row }) => <div>{row.getValue("Surname")}</div>,
+    },
+    {
+      accessorKey: "CreditScore",
+      header: "Credit Score",
+      cell: ({ row }) => <div>{row.getValue("CreditScore")}</div>,
+    },
+    {
+      accessorKey: "Geography",
+      header: "Country",
+      cell: ({ row }) => <div>{row.getValue("Geography")}</div>,
+    },
+    {
+      accessorKey: "Gender",
+      header: "Gender",
+      cell: ({ row }) => <div>{row.getValue("Gender")}</div>,
+    },
+    {
+      accessorKey: "Balance",
+      header: "Balance",
+      cell: ({ row }) => <div>${row.getValue("Balance")}</div>,
+    },
+    {
+      header: "Actions",
+      cell: ({ row }) => (
+        <Link href={`/admin/churn/${row.getValue("CustomerId")}`}>
+          <Button className="bg-blue-500 text-white hover:bg-blue-600">
+            View
+          </Button>
+        </Link>
+      ),
+    },
+  ];
 
   return (
     <div className="p-6">
-      <div className="flex flex-row justify-between">
-        <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-        <Button
-          onClick={() => {
-            signOut({ callbackUrl: "/login" });
-          }}
-        >
-          Sign out
-        </Button>
+      <AdminNav />
+      <div className="p-5" />
+
+      {/* 🔍 Search Bar */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search by Customer ID"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-4 py-2">Customer ID</th>
-              <th className="border px-4 py-2">Surname</th>
-              <th className="border px-4 py-2">Credit Score</th>
-              <th className="border px-4 py-2">Country</th>
-              <th className="border px-4 py-2">Gender</th>
-              <th className="border px-4 py-2">Balance</th>
-              <th className="border px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers.map((customer) => (
-              <tr key={customer.CustomerId} className="hover:bg-gray-100">
-                <td className="border px-4 py-2">{customer.CustomerId}</td>
-                <td className="border px-4 py-2">{customer.Surname}</td>
-                <td className="border px-4 py-2">{customer.CreditScore}</td>
-                <td className="border px-4 py-2">{customer.Geography}</td>
-                <td className="border px-4 py-2">{customer.Gender}</td>
-                <td className="border px-4 py-2">${customer.Balance}</td>
-                <td className="border px-4 py-2">
-                  <Link href={`/customer/${customer.CustomerId}`}>
-                    <Button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                      View
-                    </Button>
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <DataTable columns={columns} data={filteredCustomers} pageSize={10} />
+      )}
     </div>
   );
 };
