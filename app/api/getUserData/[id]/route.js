@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     await connectToDB();
-    const id = params.id; // Extracting ID from params correctly
+    const id = (await params).id; // Extracting ID from params correctly
 
     console.log("Customer ID:", id);
 
