@@ -1,12 +1,15 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 
-const ChurnResult = () => {
-  const searchParams = useSearchParams();
-  const customerName = searchParams.get("name") || "Customer";
+import { useEffect, useState } from "react";
 
-  // Simulate churn prediction (randomly generated)
-  const willLeave = Math.random() > 0.5; // 50% chance to Stay or Leave
+const ChurnResult = ({ params }) => {
+  const [id, setId] = useState("");
+  const [willLeave, setWillLeave] = useState(false);
+
+  useEffect(async () => {
+    const _id = (await params).id;
+    setId(_id);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">

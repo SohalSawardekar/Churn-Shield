@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react"; // Import a spinner
 
 const roles = [
   { label: "Admin", value: "admin" },
@@ -22,30 +23,39 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Show loading state
 
-    if (roles === "admin") {
-      router.push("/admin");
-    } else if (roles === "employee") {
-      router.push("/employee");
-    } else {
-      router.push("/customer");
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false, // Prevents automatic redirection
+      });
+
+      if (res?.error) {
+        console.log("Login failed:", res.error);
+        alert("Invalid credentials. Please try again.");
+        setLoading(false); // Stop loading
+        return;
+      }
+
+      // Redirect based on role
+      if (role === "admin") {
+        router.push("/admin");
+      } else if (role === "employee") {
+        router.push("/employee");
+      } else {
+        router.push("/customer");
+      }
+    } catch (error) {
+      console.log(`Error: ${error}`);
+      alert("An unexpected error occurred.");
+      setLoading(false); // Stop loading on error
     }
-    // try {
-    //   const res = await signIn("credentials", {
-    //     email: username,
-    //     password: password,
-    //   });
-
-    //   if (res?.error) {
-    //     setErrMessage("Login failed. Please check your credentials.");
-    //   }
-    // } catch (error) {
-    //   console.log(`Error: ${error}`);
-    //   setErrMessage("An unexpected error occurred.");
-    // }
   };
 
   return (
@@ -79,7 +89,7 @@ export default function LoginPage() {
               </Label>
               <Input
                 id="email"
-                type="email"
+                type="text"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +108,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="pr-10" // Add padding to the right for the icon
+                  className="pr-10"
                 />
                 <button
                   type="button"
@@ -109,8 +119,15 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="animate-spin" size={20} />
+                  <span>Logging in...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
         </CardContent>

@@ -1,25 +1,20 @@
 import mongoose from "mongoose";
 
-let isConnected = false; // Keep track of connection status globally
+const MONGODB_URI = process.env.MONGODB_URI;
 
 export const connectToDB = async () => {
-  if (isConnected) {
-    console.log("⚡ Already connected to MongoDB.");
+  if (mongoose.connection.readyState === 1) {
+    console.log("✅ Already connected to MongoDB.");
     return;
   }
 
-  mongoose.set("strictQuery", true);
-
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: "test",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    await mongoose.connect(MONGODB_URI, {
+      dbName: "test", // Change to your database name
     });
-
-    isConnected = true;
-    console.log("✅ Connected to MongoDB!");
+    console.log("✅ MongoDB connected successfully.");
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
+    throw new Error("Failed to connect to MongoDB");
   }
 };

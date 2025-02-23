@@ -1,27 +1,24 @@
-// "use client";
+"use client";
 
-// import { useSession } from "next-auth/react";
-// import { useRouter } from "next/navigation";
-// import { useEffect } from "react";
-// import LoadingScreen from "./loadingScreen";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-// export default function AuthWrapper({ children }) {
-//   const { data: session, status } = useSession();
-//   const router = useRouter();
+const AuthWrapper = ({ children }) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-//   useEffect(() => {
-//     if (status === "loading") return; // Wait until session status is known
+  useEffect(() => {
+    if (status === "loading") return; // Wait until session is determined
 
-//     if (!session) {
-//       router.push("/login"); // Redirect to login if not authenticated
-//     } else {
-//       router.push("/dashboard"); // Redirect to dashboard if authenticated
-//     }
-//   }, [session, status, router]);
+    if (!session) {
+      router.push("/login"); // Redirect to login if not authenticated
+    }
+  }, [session, status, router]);
 
-//   if (status === "loading") {
-//     return <LoadingScreen />; // Show loading while checking auth state
-//   }
+  if (!session) return null; // Prevent flashing of protected content
 
-//   return <>{children}</>;
-// }
+  return <>{children}</>;
+};
+
+export default AuthWrapper;
